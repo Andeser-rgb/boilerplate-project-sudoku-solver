@@ -1,12 +1,14 @@
 class SudokuSolver {
 
     validate(puzzleString) {
-        return !/[^\d.]+/g.test(puzzleString) && puzzleString.length === 81;
+        if(/[^\d.]+/g.test(puzzleString)) return 'Invalid characters in puzzle';
+        if(puzzleString.length !== 81) return 'Expected puzzle to be 81 characters long';
+        return null;
     }
 
     checkRowPlacement(puzzleString, row, column, value) {
         const rowString = puzzleString.slice((row - 1) * 9, row * 9);
-        return !rowString.includes(value.toString());
+        return !rowString.includes(value.toString()) || (rowString[column] === value.toString());
     }
 
     checkColPlacement(puzzleString, row, column, value) {
@@ -14,7 +16,7 @@ class SudokuSolver {
               .split('')
               .filter((d, i) => i % 9 == column - 1)
               .join('');
-        return !columnString.includes(value.toString());
+        return !columnString.includes(value.toString()) || (columnString[row] === value.toString());
     }
 
     checkRegionPlacement(puzzleString, row, column, value) {
@@ -26,7 +28,7 @@ class SudokuSolver {
         const regionString = puzzleString.slice(firstIndex, firstIndex + 3) +
               puzzleString.slice(firstIndex + 9, firstIndex + 12) +
               puzzleString.slice(firstIndex + 18, firstIndex + 21);
-        return !regionString.includes(value.toString());
+        return !regionString.includes(value.toString()) || (regionString[3 * ((row - 1) % 3) + ((column - 1) % 3) ] === value.toString());
     }
 
     checkPlacement(puzzleString, row, column, value){
