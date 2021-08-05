@@ -8,11 +8,12 @@ module.exports = function(app) {
 
     app.route('/api/check')
         .post((req, res) => {
-            const {
+            let {
                 puzzle,
                 coordinate,
                 value
             } = req.body;
+            
 
             const validation = solver.validate(puzzle);
             if (validation) {
@@ -30,6 +31,14 @@ module.exports = function(app) {
                 return;
             }
 
+            value = parseInt(value);
+            if (value < 1 || value > 9 || !value) {
+                res.json({
+                    error: 'Invalid value'
+                });
+                return;
+            }
+
             const row = coordinate.slice(0, 1).toUpperCase().charCodeAt(0) - 'A'.charCodeAt(0) + 1;
             const column = parseInt(coordinate.slice(1));
 
@@ -40,12 +49,7 @@ module.exports = function(app) {
                 });
                 return;
             }
-            if (value < 1 || value > 9) {
-                res.json({
-                    error: 'Invalid value'
-                });
-                return;
-            }
+            
 
 
             const rowCheck = solver.checkRowPlacement(puzzle, row, column, parseInt(value));
@@ -61,9 +65,9 @@ module.exports = function(app) {
                 });
             else {
                 const conflicts = [];
-                if (rowCheck) conflicts.push('row');
-                if (colCheck) conflicts.push('column');
-                if (regionCheck) conflicts.push('region');
+                if (!rowCheck) conflicts.push('row');
+                if (!colCheck) conflicts.push('column');
+                if (!regionCheck) conflicts.push('region');
                 res.json({
                     valid: false,
                     conflict: conflicts
