@@ -13,7 +13,7 @@ module.exports = function(app) {
                 coordinate,
                 value
             } = req.body;
-            
+
 
             const validation = solver.validate(puzzle);
             if (validation) {
@@ -49,7 +49,7 @@ module.exports = function(app) {
                 });
                 return;
             }
-            
+
 
 
             const rowCheck = solver.checkRowPlacement(puzzle, row, column, parseInt(value));
