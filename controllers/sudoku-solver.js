@@ -41,14 +41,19 @@ class SudokuSolver {
     }
 
    solve(puzzleString) {
-        for(let i = 0; i < puzzleString.length; i++){
+        if(this.validate(puzzleString)) return null;
+        return this.solverFunction(puzzleString);
+    }
+
+    solverFunction(puzzleString){
+      for(let i = 0; i < puzzleString.length; i++){
             if(puzzleString[i] === '.'){
                 const column = i % 9 + 1;
                 const row = parseInt(i / 9) + 1;
                 for(let j = 1; j <= 9; j++){
                     if(this.checkPlacement(puzzleString, row, column, j)){
                         const testString = puzzleString.slice(0, i) + j.toString() + puzzleString.slice(i + 1);
-                        const solution = this.solve(testString);
+                        const solution = this.solverFunction(testString);
                         if(solution !== null) return solution;
                     }
                 }
